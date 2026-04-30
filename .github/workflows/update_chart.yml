@@ -1,0 +1,19 @@
+name: Update Datawrapper chart
+
+on:
+  schedule:
+    - cron: '0 9 * * 2-6'  # Tuesday–Saturday at 9:00 UTC
+  workflow_dispatch:       # also allows manual triggering from the GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requirements.txt
+      - run: python update_iERP_datawrapper.py
+        env:
+          DW_API_KEY: ${{ secrets.DW_API_KEY }}
