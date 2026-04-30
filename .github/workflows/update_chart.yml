@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install requirements.txt
+      - run: pip install -r requirements.txt
       - run: python update_iERP_datawrapper.py
         env:
           DW_API_KEY: ${{ secrets.DW_API_KEY }}
