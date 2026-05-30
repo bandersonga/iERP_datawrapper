@@ -14,6 +14,6 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
-      - run: python update_iERP_datawrapper.py
+      - run: python update_datawrappers.py
         env:
           DW_API_KEY: ${{ secrets.DW_API_KEY }}
