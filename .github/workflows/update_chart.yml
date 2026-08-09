@@ -8,6 +8,8 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to push the keepalive commit
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -17,3 +19,16 @@ jobs:
       - run: python update_datawrappers.py
         env:
           DW_API_KEY: ${{ secrets.DW_API_KEY }}
+
+      # GitHub disables scheduled workflows in public repos after 60 days of
+      # repository inactivity, and workflow runs don't count as activity.
+      - name: Keep the schedule alive
+        if: github.event_name == 'schedule'
+        run: |
+          age=$(( ( $(date +%s) - $(git log -1 --format=%ct) ) / 86400 ))
+          if [ "$age" -ge 45 ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --allow-empty -m "chore: keepalive"
+            git push
+          fi
